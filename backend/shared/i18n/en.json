@@ -1,0 +1,8 @@
+{
+    "welcome.message" : "Welcome ",
+    "server.success.message" :"Server Start at Port No ",
+    "server.crash.message":"Server Crash ",
+    "database.crash.message":"Cannot connect database ",
+    "database.success.message":"Database connected successfully",
+    "oAuth.crash.message":"Error During oAuth"
+}
