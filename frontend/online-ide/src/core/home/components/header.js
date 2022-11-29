@@ -2,20 +2,33 @@ import React, { useState } from "react";
 import { loginWithGoogle } from "../../../shared/firebase/config";
 import { GoogleAuthProvider } from "firebase/auth";
 import { useNavigate } from "react-router-dom";
+import { API_CLIENT } from "../../../shared/services/api-client.js";
 const Header = () => {
   const [user, setUser] = useState({ userInfo: {}, isLogin: false });
   const navigate = useNavigate();
   const doLogin = () => {
     const promise = loginWithGoogle();
     promise
-      .then((result) => {const credential = GoogleAuthProvider.credentialFromResult(result);
+      .then(async (result) => {
+        const credential = GoogleAuthProvider.credentialFromResult(result);
         const token = credential.accessToken;
         console.log(result);
         const user = result.user;
         setUser({ userInfo: user, isLogin: true });
-        navigate("/questions", {
-          state: { userName: user.displayName },
-        });
+        try {
+          console.log("hello ",process.env.REACT_APP_OAUTH);
+          const response = await API_CLIENT.post("http://localhost:1256/oauth", {
+            name: user.displayName,
+            email: user.email,
+            photo: user.photoURL,
+          });
+          console.log("RESPONSE ", response);
+          navigate("/questions", {
+            state: { userName: user.displayName },
+          });
+        } catch (err) {
+          console.log("ERROR CONNECTING DB", err);
+        }
       })
       .catch((error) => {
         const errorCode = error.code;
@@ -52,7 +65,7 @@ const Header = () => {
               </li>
               <li className="nav-item">
                 <a className="nav-link" href="#" onClick={doLogin}>
-                  {user.isLogin?<span>Sign out</span>:<span>Sign In</span>}
+                  {user.isLogin ? <span>Sign out</span> : <span>Sign In</span>}
                 </a>
               </li>
             </ul>

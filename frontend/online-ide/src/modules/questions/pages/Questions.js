@@ -30,7 +30,7 @@ export const Questions = () => {
           </tr>
         </thead>
         <tbody>
-          {questions.length == 0
+          {questions.length === 0
             ? noQuestionsJSX
             : questions.map((question) => <Question ques={question} />)}
         </tbody>
