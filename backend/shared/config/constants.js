@@ -3,6 +3,9 @@ module.exports={
         HOME:'/',
         USER:{
             OAUTH:'/oauth'
+        },
+        QUESTION:{
+            COMPILE_AND_RUN:'/run'
         }
     },
     HTTP_STATUS_CODES:{
@@ -11,6 +14,8 @@ module.exports={
         SERVER_ERROR : 500
     },
     SCHEMAS:{
-        USER_SCHEMA: 'users'
+        USER_SCHEMA: 'users',
+        QUESTIONS_SCHEMA:'questions',
+        SOLUTION_SCHEMA:'solutions'
     }
 }

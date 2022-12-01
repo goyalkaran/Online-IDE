@@ -3,11 +3,13 @@ import { loginWithGoogle } from "../../../shared/firebase/config";
 import { GoogleAuthProvider } from "firebase/auth";
 import { useNavigate } from "react-router-dom";
 import { API_CLIENT } from "../../../shared/services/api-client.js";
+
 const Header = () => {
   const [user, setUser] = useState({ userInfo: {}, isLogin: false });
   const navigate = useNavigate();
   const doLogin = () => {
     const promise = loginWithGoogle();
+    console.log("promise ", promise);
     promise
       .then(async (result) => {
         const credential = GoogleAuthProvider.credentialFromResult(result);
@@ -16,24 +18,29 @@ const Header = () => {
         const user = result.user;
         setUser({ userInfo: user, isLogin: true });
         try {
-          console.log("hello ",process.env.REACT_APP_OAUTH);
-          const response = await API_CLIENT.post("http://localhost:1256/oauth", {
-            name: user.displayName,
-            email: user.email,
-            photo: user.photoURL,
-          });
+
+          // console.log("hello ", "http://localhost:1256/oauth");
+
+          const response = await API_CLIENT.post(
+            process.env.REACT_APP_OAUTH,
+            {
+              name: user.displayName,
+              email: user.email,
+              photo: user.photoURL,
+            }
+          );
           console.log("RESPONSE ", response);
           navigate("/questions", {
             state: { userName: user.displayName },
           });
         } catch (err) {
-          console.log("ERROR CONNECTING DB", err);
+          console.log("ERROR CONNECTING DB ", err);
         }
       })
       .catch((error) => {
-        const errorCode = error.code;
-        const errorMessage = error.message;
-        const email = error.customData.email;
+        // const errorCode = error.code;
+        // const errorMessage = error.message;
+        // const email = error.customData.email;
         const credential = GoogleAuthProvider.credentialFromError(error);
         console.log(credential);
       });

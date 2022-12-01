@@ -1,7 +1,8 @@
 import React, { useRef } from "react";
 import Editor from "@monaco-editor/react";
+import {API_CLIENT} from '../../../shared/services/api-client.js';
 
-export const CodeEditor = () => {
+export const CodeEditor = ({output}) => {
   const editorRef = useRef({});
   const options = {
     fontSize: 20,
@@ -16,10 +17,17 @@ export const CodeEditor = () => {
       horizontal: "visible",
     },
   };
-  const compileAndRun = () => {
+  const compileAndRun = async() => {
     console.log("editor ref", editorRef.current);
     const code = editorRef.current.getValue();
     console.log("CODE    ", code);
+    const response=await API_CLIENT.post(process.env.REACT_APP_COMPILE_AND_RUN,{code:code})
+    console.log("COMPILE RESPONSE: ",response);
+    if(response.data.details){
+      output(`${response.data.message} ${response.data.details}`);
+    }else{
+      output(`${response.data.message} ${response.data.result}`);
+    }
   };
   const handleEditorDidMount = (editor, monaco) => {
     editorRef.current = editor;
